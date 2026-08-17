@@ -1,32 +1,25 @@
 ﻿using AppTask.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppTask.Controllers
 {
-    public class TarefaController : Controller
+    public class IncidentesController : Controller
     {
         private readonly DbTasksContext _context;
 
-        public TarefaController(DbTasksContext context)
+        public IncidentesController(DbTasksContext context)
         {
             _context = context;
         }
 
-        // GET: Tarefa
+        // GET: Incidentes
         public async Task<IActionResult> Index()
         {
-            var dbTasksContext = _context.Tarefas.Include(t => t.Funcionario);
-            return View(await dbTasksContext.ToListAsync());
-        }
-        public async Task<IActionResult> Sobre()
-        {
-
-            return View();
+            return View(await _context.Incidentes.ToListAsync());
         }
 
-        // GET: Tarefa/Details/5
+        // GET: Incidentes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,43 +27,39 @@ namespace AppTask.Controllers
                 return NotFound();
             }
 
-            var tarefa = await _context.Tarefas
-                .Include(t => t.Funcionario)
+            var incidente = await _context.Incidentes
                 .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (tarefa == null)
+            if (incidente == null)
             {
                 return NotFound();
             }
 
-            return View(tarefa);
+            return View(incidente);
         }
 
-        // GET: Tarefa/Create
+        // GET: Incidentes/Create
         public IActionResult Create()
         {
-            ViewData["ListaFuncionario"] = new SelectList(_context.Funcionarios, "Codigo", "Nome");
-
             return View();
         }
 
-        // POST: Tarefa/Create
+        // POST: Incidentes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Codigo,Descricao,DataPlanejada,DataIniciada,DataFinalizada,DataCancelada,StatusTarefa,Prazo,FuncionarioId")] Tarefa tarefa)
+        public async Task<IActionResult> Create([Bind("Codigo,DescricaoProblema,DataIncidente,Solucao,Resolvido")] Incidente incidente)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tarefa);
+                _context.Add(incidente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ListaFuncionario"] = new SelectList(_context.Funcionarios, "Codigo", "Nome", tarefa.FuncionarioId);
-            return View(tarefa);
+            return View(incidente);
         }
 
-        // GET: Tarefa/Edit/5
+        // GET: Incidentes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,23 +67,22 @@ namespace AppTask.Controllers
                 return NotFound();
             }
 
-            var tarefa = await _context.Tarefas.FindAsync(id);
-            if (tarefa == null)
+            var incidente = await _context.Incidentes.FindAsync(id);
+            if (incidente == null)
             {
                 return NotFound();
             }
-            ViewData["CodigoFuncionario"] = new SelectList(_context.Funcionarios, "Codigo", "Nome", tarefa.FuncionarioId);
-            return View(tarefa);
+            return View(incidente);
         }
 
-        // POST: Tarefa/Edit/5
+        // POST: Incidentes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Codigo,Descricao,DataPlanejada,DataIniciada,DataFinalizada,DataCancelada,StatusTarefa,Prazo,CodigoFuncionario")] Tarefa tarefa)
+        public async Task<IActionResult> Edit(int id, [Bind("Codigo,DescricaoProblema,DataIncidente,Solucao,Resolvido")] Incidente incidente)
         {
-            if (id != tarefa.Codigo)
+            if (id != incidente.Codigo)
             {
                 return NotFound();
             }
@@ -103,12 +91,12 @@ namespace AppTask.Controllers
             {
                 try
                 {
-                    _context.Update(tarefa);
+                    _context.Update(incidente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TarefaExists(tarefa.Codigo))
+                    if (!IncidenteExists(incidente.Codigo))
                     {
                         return NotFound();
                     }
@@ -119,11 +107,10 @@ namespace AppTask.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CodigoFuncionario"] = new SelectList(_context.Funcionarios, "Codigo", "Nome", tarefa.FuncionarioId);
-            return View(tarefa);
+            return View(incidente);
         }
 
-        // GET: Tarefa/Delete/5
+        // GET: Incidentes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,35 +118,34 @@ namespace AppTask.Controllers
                 return NotFound();
             }
 
-            var tarefa = await _context.Tarefas
-                .Include(t => t.Funcionario)
+            var incidente = await _context.Incidentes
                 .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (tarefa == null)
+            if (incidente == null)
             {
                 return NotFound();
             }
 
-            return View(tarefa);
+            return View(incidente);
         }
 
-        // POST: Tarefa/Delete/5
+        // POST: Incidentes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tarefa = await _context.Tarefas.FindAsync(id);
-            if (tarefa != null)
+            var incidente = await _context.Incidentes.FindAsync(id);
+            if (incidente != null)
             {
-                _context.Tarefas.Remove(tarefa);
+                _context.Incidentes.Remove(incidente);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TarefaExists(int id)
+        private bool IncidenteExists(int id)
         {
-            return _context.Tarefas.Any(e => e.Codigo == id);
+            return _context.Incidentes.Any(e => e.Codigo == id);
         }
     }
 }
