@@ -17,8 +17,6 @@ public partial class DbTasksContext : DbContext
 
     public virtual DbSet<Funcionario> Funcionarios { get; set; }
 
-    public virtual DbSet<Incidente> Incidentes { get; set; }
-
     public virtual DbSet<Tarefa> Tarefas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -37,24 +35,6 @@ public partial class DbTasksContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Nome)
                 .HasMaxLength(100)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<Incidente>(entity =>
-        {
-            entity.HasKey(e => e.Codigo).HasName("PK__Incident__06370DADBC26F4B7");
-
-            entity.ToTable("Incidente");
-
-            entity.Property(e => e.DataIncidente).HasColumnType("datetime");
-            entity.Property(e => e.DescricaoProblema)
-                .HasMaxLength(250)
-                .IsUnicode(false);
-            entity.Property(e => e.Resolvido)
-                .HasMaxLength(3)
-                .IsUnicode(false);
-            entity.Property(e => e.Solucao)
-                .HasMaxLength(250)
                 .IsUnicode(false);
         });
 
